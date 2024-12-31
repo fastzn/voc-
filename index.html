@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="txt/html" charset="utf-8">
+	<title>七夕节动画</title>
+	<link rel="stylesheet" type="text/css" href="pageA.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="pageB.css">
+	<link rel="stylesheet" type="text/css" href="pageC.css">
+	<style type="text/css">
+		
+	</style>
+</head>
+<body>
+	<!-- Adicionando a música via JavaScript -->
+	<button id="playMusicBtn">Tocar Música</button> <!-- Botão para iniciar a música -->
+	<script type="text/javascript">
+		// Função para carregar e tocar a música
+		var audio = new Audio('music/j.mp3'); // Substitua pelo caminho correto da sua música
+		audio.loop = true;  // Para que a música fique em loop
+
+		// Função que toca a música quando o botão é clicado
+		document.getElementById('playMusicBtn').addEventListener('click', function() {
+			audio.play(); // Toca a música
+			this.style.display = 'none'; // Esconde o botão após o clique
+		});
+	</script>
+
+	<div class="stars1"></div>
+	<div id="content">
+		<ul class="content-wrap">
+			<li>
+				<div class="a_background">
+					<div class="a_background_top"></div>
+					<div class="a_background_middle"></div>
+					<div class="a_background_bottom"></div>
+				</div>
+
+				<div class="cloudArea">
+					<div class="cloud cloud1"></div>
+					<div class="cloud cloud2"></div>
+				</div>
+
+				<div id="sun"></div>
+			</li>
+			<li>
+				<div class="b_background"></div>
+				<div class="b_background_preload"></div>
+				<div class="shop">
+					<div class="door">
+						<div class="door-left"></div>
+						<div class="door-right"></div>
+					</div>
+					<div class="lamp"></div>
+				</div>
+				<div class="bird"></div>
+			</li>
+			<li>
+				<div class="c_background">
+					<div class="c_background_top"></div>
+					<div class="c_background_middle"></div>
+					<div class="c_background_bottom"></div>
+				</div>
+				<div class="girl"></div>
+				<div class="water">
+					<div class="water1"></div>
+					<div class="water2"></div>
+					<div class="water3"></div>
+					<div class="water4"></div>
+				</div>
+				<div class="stars">
+					<div class="stars1"></div>
+					<div class="stars2"></div>
+					<div class="stars3"></div>
+					<div class="stars4"></div>
+					<div class="stars5"></div>
+					<div class="stars6"></div>
+				</div>
+			</li>
+		</ul>
+		<div id="boy" class="character"></div>
+		<div id="snowflake"></div>
+	</div>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="animation.js"></script>	
+	<script type="text/javascript" src="QiXi.js"></script>
+	<script type="text/javascript" src="Swipe.js"></script>	
+	<script type="text/javascript">
+	$(function(){
+		var container = $("#content");
+		var swipe = Swipe(container);
+
+		function scrollTo(time ,propertionX){
+			var distX = container.width()*propertionX;
+			swipe.scrollTo( distX , time);
+		}
+
+		var getValue = function( className ){
+			var $elem = $('' + className + '' );
+			return {
+				height : $elem.height(),
+				top : $elem.position().top
+			};
+		}; 
+		var bridgeY = function(){
+			var data = getValue('.c_background_middle');
+			return data.top;
+		}();
+
+		var girl = {
+			elem : $('.girl'),
+
+			getHeight : function(){
+				return this.elem.height();
+			},
+
+			setOffset : function(){
+				this.elem.css({
+					left : visualWidth / 2,
+					top : bridgeY - this.getHeight()
+				})
+			},
+
+			getWidth : function(){
+				return this.elem.width();
+			},
+
+			getOffset : function(){
+				return this.elem.offset();
+			},
+
+			rotate : function(){
+				this.elem.addClass('girlRotate');
+			},
+
+		};
+
+		girl.setOffset();
+
+		var boy = BoyWalk();
+
+		$().ready(function(){
+			var audio1 = html5Audio( audioConfig.playUrl );
+			audio1.end( function(){
+				html5Audio( audioConfig.cycleUrl , true );
+			});
+
+			$("#sun").addClass('rotation');
+
+			$(".cloud:first").addClass('cloud1Anim');
+			$(".cloud:last").addClass('cloud2Anim');
+
+			boy.walkTo( 2000 , 0.2)
+			.then(function(){
+				scrollTo( 5000 , 1)
+			})
+			.then(function(){
+				return boy.walkTo( 5000 , 0.5)
+			})
+			.then(function(){
+				return boy.walkTo(2000, 0.55)
+			})
+			.then(function(){
+				boy.stopWalk();
+			})
+			.then(function(){
+				return openDoor();
+			})
+			.then(function(){
+				lamp.bright();
+			})
+			.then(function(){
+				return boy.toShop(2000);
+			})
+			.then(function(){
+				return boy.interval(2000);
+			})
+			.then(function(){
+				boy.takeFlower();
+			})
+			.then(function(){
+				bird.fly();
+			})
+			.then(function(){
+				return boy.outShop(2000);
+			})
+			.then(function(){
+				setTimeout(function(){
+					return shutDoor();
+				},2000) 	
+			})
+			.then(function(){
+				setTimeout(function(){
+					lamp.dark();
+				},4000)
+			})
+			.then(function(){
+				return boy.interval(4000);
+			})
+			.then(function(){
+				boy.walkTo( 3000 , 0.45)
+			})
+			.then(function(){
+				scrollTo( 5000 , 2)
+			})
+			.then(function(){
+				return boy.walkTo( 2000, 0.15)
+			})
+			.then(function(){
+				return boy.walkTo( 1000 , 0.25 ,(bridgeY - girl.getHeight()) / visualHeight);
+			}).then(function(){
+				return boy.walkTo( 1500, ( girl.getOffset().left - boy.getWidth() + girl.getWidth() / 5 ) / visualWidth)
+			}).then(function(){
+				boy.resetOriginal();
+			}).then(function(){
+				setTimeout(function(){
+					girl.rotate();
+					boy.rotate();
+				} , 1000);
+			}).then(function(){
+				snowflake();
+			})
+		}); 
+	});
+	</script>
+</body>
+</html>
